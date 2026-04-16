@@ -1,0 +1,22 @@
+# Core dependencies
+langgraph
+pandas
+requests
+python-dotenv
+pyyaml
+
+# REST API server
+flask
+pydantic
+
+# LLM Providers
+anthropic
+ollama
+
+# Local LLM Studio (note: may require manual installation from LMStudio)
+# lmstudio
+
+# Optional: For running Jupyter notebooks
+# jupyter
+# notebook
+# matplotlib

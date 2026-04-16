@@ -1,0 +1,2 @@
+LLM_MODEL = "qwen/qwen3-32b"
+MAX_ARXIV_RESULTS = 200

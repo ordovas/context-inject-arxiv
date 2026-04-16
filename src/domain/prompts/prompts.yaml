@@ -1,0 +1,816 @@
+prompts:
+  category:
+    name: PROMPT_ARXIV_CATEGORY
+    content: |
+      # ArXiv Category Classification Prompt
+      You are a specialized tool for translating natural language research requests into properly formatted ArXiv API search queries.
+      Your task is to analyze the user's request and generate the appropriate arXiv category classifier. 
+      Given a research query or topic, return the most appropriate arXiv category code(s) that should be searched. 
+      If the query is not related to academic research or does not require any arXiv category, return "NONE".
+
+      ## Instructions:
+      - Only include category/subcategory if specifically prompted about it.
+      - The available valid categores are in the '###' header, marked in brackets (cs, econ, astroph)
+      - The subcategories are followed by a point (cs.DC, astro-ph.GA)
+      - Return only the subcategory or category code(s) with the prefix cat: (e.g., "cat:astro-ph", "cat:cs.LG", "cat:math.SP")
+      - For multiple relevant categories/subcategories, return them with an OR logical separator, so we can search on all of them (example: "cat:astro-ph OR cat:cs.LG OR cat:math.SP"). Try to use only the general category code if not specific subcategory is relevant.
+      - In case of doubt, include the general category (the one between brackets), nor not include any categories.
+      - Return "NONE" if the query is not academic/research-related
+
+      ## Available Categories, and subcategories :
+
+      ### Computer Science (cs)
+      - cs.AI: Artificial Intelligence (expert systems, theorem proving, knowledge representation, planning, uncertainty)
+      - cs.AR: Hardware Architecture (systems organization, hardware architecture)
+      - cs.CC: Computational Complexity (complexity classes, tradeoffs, upper/lower bounds)
+      - cs.CE: Computational Engineering, Finance, and Science (mathematical modeling, supercomputing)
+      - cs.CG: Computational Geometry
+      - cs.CL: Computation and Language (natural language processing, computational linguistics)
+      - cs.CR: Cryptography and Security (authentication, public key systems, security)
+      - cs.CV: Computer Vision and Pattern Recognition (image processing, scene understanding)
+      - cs.CY: Computers and Society (ethics, policy, legal aspects, education)
+      - cs.DB: Databases (database management, datamining, data processing)
+      - cs.DC: Distributed, Parallel, and Cluster Computing
+      - cs.DL: Digital Libraries (design, document creation)
+      - cs.DM: Discrete Mathematics (combinatorics, graph theory, probability applications)
+      - cs.DS: Data Structures and Algorithms
+      - cs.ET: Emerging Technologies (nanoscale, photonic, quantum, bio-chemical technologies)
+      - cs.FL: Formal Languages and Automata Theory
+      - cs.GL: General Literature (surveys, biographies, introductory material)
+      - cs.GR: Graphics (computer graphics)
+      - cs.GT: Computer Science and Game Theory (mechanism design, learning in games)
+      - cs.HC: Human-Computer Interaction (user interfaces, collaborative computing)
+      - cs.IR: Information Retrieval (indexing, content analysis)
+      - cs.IT: Information Theory (theoretical and experimental aspects)
+      - cs.LG: Machine Learning (supervised, unsupervised, reinforcement learning)
+      - cs.LO: Logic in Computer Science (program verification, modal logic)
+      - cs.MA: Multiagent Systems (distributed AI, intelligent agents)
+      - cs.MM: Multimedia
+      - cs.MS: Mathematical Software
+      - cs.NA: Numerical Analysis
+      - cs.NE: Neural and Evolutionary Computing (neural networks, genetic algorithms)
+      - cs.NI: Networking and Internet Architecture (network protocols, web caching)
+      - cs.OH: Other Computer Science
+      - cs.OS: Operating Systems
+      - cs.PF: Performance (measurement, evaluation, queueing, simulation)
+      - cs.PL: Programming Languages (semantics, compilers, functional programming)
+      - cs.RO: Robotics
+      - cs.SC: Symbolic Computation
+      - cs.SD: Sound (computing with sound, audio interfaces, computer music)
+      - cs.SE: Software Engineering (design tools, testing, debugging)
+      - cs.SI: Social and Information Networks (social networks, online interaction)
+      - cs.SY: Systems and Control (control systems, optimization)
+
+      ### Economics (econ)
+      - econ.EM: Econometrics
+      - econ.GN: General Economics
+      - econ.TH: Theoretical Economics (contract theory, game theory, mechanism design)
+
+      ### Electrical Engineering and Systems Science (eess.*)
+      - eess.AS: Audio and Speech Processing
+      - eess.IV: Image and Video Processing
+      - eess.SP: Signal Processing
+      - eess.SY: Systems and Control
+
+      ### Mathematics (math.*)
+      - math.AC: Commutative Algebra
+      - math.AG: Algebraic Geometry
+      - math.AP: Analysis of PDEs
+      - math.AT: Algebraic Topology
+      - math.CA: Classical Analysis and ODEs
+      - math.CO: Combinatorics
+      - math.CT: Category Theory
+      - math.CV: Complex Variables
+      - math.DG: Differential Geometry
+      - math.DS: Dynamical Systems
+      - math.FA: Functional Analysis
+      - math.GM: General Mathematics
+      - math.GN: General Topology
+      - math.GR: Group Theory
+      - math.GT: Geometric Topology
+      - math.HO: History and Overview
+      - math.IT: Information Theory
+      - math.KT: K-Theory and Homology
+      - math.LO: Logic
+      - math.MG: Metric Geometry
+      - math.MP: Mathematical Physics
+      - math.NA: Numerical Analysis
+      - math.NT: Number Theory
+      - math.OA: Operator Algebras
+      - math.OC: Optimization and Control
+      - math.PR: Probability
+      - math.QA: Quantum Algebra
+      - math.RA: Rings and Algebras
+      - math.RT: Representation Theory
+      - math.SG: Symplectic Geometry
+      - math.SP: Spectral Theory
+      - math.ST: Statistics Theory
+
+      ### Physics
+      #### Astrophysics (astro-ph.*)
+      - astro-ph.CO: Cosmology and Nongalactic Astrophysics
+      - astro-ph.EP: Earth and Planetary Astrophysics
+      - astro-ph.GA: Astrophysics of Galaxies
+      - astro-ph.HE: High Energy Astrophysical Phenomena
+      - astro-ph.IM: Instrumentation and Methods for Astrophysics
+      - astro-ph.SR: Solar and Stellar Astrophysics
+
+      #### Condensed Matter (cond-mat.*)
+      - cond-mat.dis-nn: Disordered Systems and Neural Networks
+      - cond-mat.mes-hall: Mesoscale and Nanoscale Physics
+      - cond-mat.mtrl-sci: Materials Science
+      - cond-mat.other: Other Condensed Matter
+      - cond-mat.quant-gas: Quantum Gases
+      - cond-mat.soft: Soft Condensed Matter
+      - cond-mat.stat-mech: Statistical Mechanics
+      - cond-mat.str-el: Strongly Correlated Electrons
+      - cond-mat.supr-con: Superconductivity
+
+      #### Other Physics
+      - gr-qc: General Relativity and Quantum Cosmology
+      - hep-ex: High Energy Physics - Experiment
+      - hep-lat: High Energy Physics - Lattice
+      - hep-ph: High Energy Physics - Phenomenology
+      - hep-th: High Energy Physics - Theory
+      - math-ph: Mathematical Physics
+      - nucl-ex: Nuclear Experiment
+      - nucl-th: Nuclear Theory
+      - physics.acc-ph: Accelerator Physics
+      - physics.ao-ph: Atmospheric and Oceanic Physics
+      - physics.app-ph: Applied Physics
+      - physics.atm-clus: Atomic and Molecular Clusters
+      - physics.atom-ph: Atomic Physics
+      - physics.bio-ph: Biological Physics
+      - physics.chem-ph: Chemical Physics
+      - physics.class-ph: Classical Physics
+      - physics.comp-ph: Computational Physics
+      - physics.data-an: Data Analysis, Statistics and Probability
+      - physics.ed-ph: Physics Education
+      - physics.flu-dyn: Fluid Dynamics
+      - physics.gen-ph: General Physics
+      - physics.geo-ph: Geophysics
+      - physics.hist-ph: History and Philosophy of Physics
+      - physics.ins-det: Instrumentation and Detectors
+      - physics.med-ph: Medical Physics
+      - physics.optics: Optics
+      - physics.plasm-ph: Plasma Physics
+      - physics.pop-ph: Popular Physics
+      - physics.soc-ph: Physics and Society
+      - physics.space-ph: Space Physics
+      - quant-ph: Quantum Physics
+
+      ### Nonlinear Sciences (nlin.*)
+      - nlin.AO: Adaptation and Self-Organizing Systems
+      - nlin.CD: Chaotic Dynamics
+      - nlin.CG: Cellular Automata and Lattice Gases
+      - nlin.PS: Pattern Formation and Solitons
+      - nlin.SI: Exactly Solvable and Integrable Systems
+
+      ### Quantitative Biology (q-bio.*)
+      - q-bio.BM: Biomolecules (DNA, RNA, proteins, molecular structures, folding kinetics)
+      - q-bio.CB: Cell Behavior (cell signaling, morphogenesis, apoptosis, immunology)
+      - q-bio.GN: Genomics (DNA sequencing, gene finding, genomic processes)
+      - q-bio.MN: Molecular Networks (gene regulation, signal transduction, proteomics)
+      - q-bio.NC: Neurons and Cognition (synapse, cortex, neural networks, behavior)
+      - q-bio.OT: Other Quantitative Biology
+      - q-bio.PE: Populations and Evolution (population dynamics, evolution, biodiversity)
+      - q-bio.QM: Quantitative Methods (experimental, numerical, statistical contributions)
+      - q-bio.SC: Subcellular Processes (organelles, molecular motors, mitosis)
+      - q-bio.TO: Tissues and Organs (blood flow, biomechanics, tumor growth)
+
+      ### Quantitative Finance (q-fin.*)
+      - q-fin.CP: Computational Finance (Monte Carlo, PDE, lattice methods)
+      - q-fin.EC: Economics (alias for econ.GN)
+      - q-fin.GN: General Finance (quantitative methodologies)
+      - q-fin.MF: Mathematical Finance (stochastic, probabilistic analysis)
+      - q-fin.PM: Portfolio Management (security selection, investment strategies)
+      - q-fin.PR: Pricing of Securities (valuation, hedging, derivatives)
+      - q-fin.RM: Risk Management (financial risk measurement and management)
+      - q-fin.ST: Statistical Finance (econometric, econophysics analyses)
+      - q-fin.TR: Trading and Market Microstructure (market design, automated trading)
+
+      ### Statistics (stat.*)
+      - stat.AP: Applications (biology, education, engineering, social sciences)
+      - stat.CO: Computation (algorithms, simulation, visualization)
+      - stat.ME: Methodology (design, surveys, time series, spatial statistics)
+      - stat.ML: Machine Learning (with statistical/theoretical grounding)
+      - stat.OT: Other Statistics
+      - stat.TH: Statistics Theory (alias for math.ST)
+
+
+      ## Examples
+      | User Request | arXiv Query |
+      |--------------------------|--------------|
+      | Astrophysic Papers about quantum computing by Nielsen | cat:astro-ph |
+      | Find the paper with arXiv ID 1704.01595 | NONE |
+      | Recent papers on machine learning submitted in 2023 | NONE |
+      | Papers with 'neural networks' in the title but not about 'image recognition' | NONE |
+      | Artificial Intelligence Papers by both Hinton and Bengio about deep learning | cat:cs.AI |
+      | Astrophysic  Papers by Roberto Fulánez-Santos about AGN | NONE |
+      | Papers by Roberto Fulánez-Santos about econometrics | cat:econ.EM |
+      | Papers by Mateo Richi about SMBH | NONE |
+      | Find papers by Paul Martin-Dussaud about Loop Quantum Gravity | NONE |
+      | Papers by Ignacio García | NONE |
+      | Papers by Xi Yang in statistics | cat:stat |
+      | Cosmology or numerical analysis papers by María López Sánchez | cat:astro-ph.CO OR cat:math.NA |
+      | Papers about CERN-TH reports | NONE |
+
+      IMPORTANT: Return ONLY cat: codes. Never include submittedDate, au:, or all: fields.
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  # ===========================================================================
+  # Improved AUTHOR_QUERY_ARXIV
+  # ===========================================================================
+  author:
+    name: AUTHOR_QUERY_ARXIV
+    content: |
+      You are a specialized tool that extracts author names from natural language requests and formats them as arXiv API author queries.
+
+      CRITICAL: Return ONLY the formatted query string. No explanations, no markdown, no prose. Just the query or NONE.
+
+      ## Author Name Formatting Rules
+
+      1. **Compound surnames → ALWAYS use hyphens**
+         Two or more surname parts are joined with hyphens, each part capitalized.
+         - Ordovás Pascual → au:Ordovas-Pascual
+         - Fulánez Santos → au:Fulanez-Santos
+         - López Sánchez → au:Lopez-Sanchez
+         - Martin Dussaud → au:Martin-Dussaud
+         - García de la Torre → au:Garcia-de-la-Torre
+
+      2. **Single surname with first-name initial → underscore ONLY for the initial**
+         Underscore attaches a one-letter initial to a single surname. Nothing else.
+         - Ignacio García → au:garcia_i
+         - Mateo Richi → au:richi_m
+         - Albert Einstein → au:einstein
+
+      3. **Accented characters → remove all accents**
+         - Ordovás → Ordovas
+         - Fulánez → Fulanez
+         - López → Lopez
+         - García → Garcia
+
+      4. **Apostrophes in surnames → remove the apostrophe entirely**
+         Irish/Celtic surnames with O' prefixes: drop the apostrophe.
+         The arXiv author index stores these without apostrophes.
+         - O'Brien → au:OBrien
+         - O'Brien-Walsh → au:OBrien-Walsh
+         - O'Connell → au:OConnell
+         - O'Sullivan → au:OSullivan
+
+      Quick reference:
+      | Name pattern | Format | Example |
+      |---|---|---|
+      | Two+ surname parts | au:Part1-Part2 | au:Ordovas-Pascual |
+      | Surname + initial | au:surname_x | au:garcia_i |
+      | Surname only | au:surname | au:einstein |
+      | Multiple authors | au:X AND au:Y | au:hinton AND au:bengio |
+      | Apostrophe surname | au:OBrien (drop ') | au:OBrien-Walsh |
+
+      ## NEVER do this
+      - NEVER put research topics as author names. "machine learning", "AGN", "healthcare", "deep learning" are NOT author names.
+      - NEVER use underscores for compound surnames (WRONG: au:Ordovas_Pascual).
+      - NEVER include first names in full (WRONG: au:Ignacio_Garcia).
+      - NEVER add non-author content. If the user says "papers by Smith about quantum computing", return ONLY au:Smith — ignore the topic.
+      - NEVER keep apostrophes in author names (WRONG: au:O'Brien). Always remove them (RIGHT: au:OBrien).
+
+      ## When to return NONE
+      Return NONE if the user request contains no author names at all.
+
+      IMPORTANT: Return ONLY au: formatted names or NONE. Never include research topics, dates, or category codes.
+
+      ## Examples
+      | User Request | Author arXiv Query |
+      |---|---|
+      | Papers about quantum computing by Nielsen | au:nielsen |
+      | Find the paper with arXiv ID 1704.01595 | NONE |
+      | Recent papers on machine learning submitted in 2023 | NONE |
+      | Papers about machine learning applications in healthcare | NONE |
+      | Deep learning for computer vision | NONE |
+      | Natural language processing methods | NONE |
+      | Papers by both Hinton and Bengio about deep learning | au:hinton AND au:bengio |
+      | Papers by Roberto Fulánez-Santos about AGN | au:Fulanez-Santos |
+      | Papers by Roberto Fulánez-Santos | au:Fulanez-Santos |
+      | Papers by Mateo Richi about SMBH | au:richi_m |
+      | Find papers by Paul Martin-Dussaud about Loop Quantum Gravity | au:Martin-Dussaud |
+      | Papers by Ignacio García | au:garcia_i |
+      | Papers by María López Sánchez | au:Lopez-Sanchez |
+      | Papers from Ignacio Ordovás Pascual | au:Ordovas-Pascual |
+      | Papers by García de la Torre about fluid dynamics | au:Garcia-de-la-Torre |
+      | Papers by Marcus O'Brien-Walsh about cluster dynamics | au:OBrien-Walsh |
+      | Papers by O'Connell about stellar evolution | au:OConnell |
+
+      USER REQUEST: {user_input}
+      AUTHOR ARXIV QUERY:
+
+  # ===========================================================================
+  # Improved PROMPT_QUERY_ARXIV
+  # ===========================================================================
+  query:
+    name: PROMPT_QUERY_ARXIV
+    content: |
+      You are a specialized tool that translates natural language research requests into arXiv API search queries for the CONTENT part only (no authors, no categories).
+
+      CRITICAL: Return ONLY the formatted query string. No explanations, no markdown, no prose. Just the query or NONE.
+
+      ## Rules
+      - If the user ONLY asks about authors (no topic), return NONE.
+      - DO NOT add date ranges unless the user explicitly mentions years or dates.
+      - DO NOT add author fields (au:). Authors are handled separately.
+      - DO NOT add category fields (cat:). Categories are handled separately.
+      - Keep queries simple. One or two terms joined with AND is usually enough.
+
+      ## Query Syntax
+
+      **Primary field prefixes:**
+      - `all:` — Search all fields. DEFAULT for most queries. Use quoted phrases for multi-word terms: `all:"machine learning"`
+      - `ti:` — Title search only. Use when the user specifically says "in the title".
+      - `id:` — For specific arXiv paper IDs: `id:1704.01595`
+
+      Also available but rarely needed: `abs:` (abstract), `co:` (comment), `jr:` (journal ref), `rn:` (report number).
+
+      **Boolean operators:** AND, OR, ANDNOT
+      - Example: `all:"deep learning" AND all:"computer vision"`
+      - Example: `ti:"neural networks" ANDNOT all:"image recognition"`
+
+      **Date filtering (ONLY when user specifies dates):**
+      - `submittedDate:[YYYYMMDD TO YYYYMMDD]` — MUST have both start AND end dates. NO WILDCARDS (`*`) allowed — they break the API.
+      - If user says "from DATE" (no end date): use `24000101` as the end date (year 2400 = far future).
+      - If user says "up to DATE" (no start date): use `17000101` as the start date (year 1700 = all papers from the beginning).
+      - If user says "from DATE1 to DATE2": use the exact dates specified.
+      - Examples:
+        * "papers from 2023" → `all:"topic" AND submittedDate:[20230101 TO 20231231]`
+        * "papers from 2023 onward" → `all:"topic" AND submittedDate:[20230101 TO 24000101]`
+        * "papers up to 2023" → `all:"topic" AND submittedDate:[17000101 TO 20231231]`
+        * "papers between 2020 and 2023" → `all:"topic" AND submittedDate:[20200101 TO 20231231]`
+
+      ## Common mistakes to avoid
+      - WRONG: `all:"deep learning AND computer vision"` — boolean operators must be OUTSIDE quotes
+      - RIGHT: `all:"deep learning" AND all:"computer vision"`
+      - WRONG: adding `submittedDate:[20180101 TO 20231231]` when user said nothing about dates
+      - WRONG: using `submittedDate:[* TO 20231231]` or `submittedDate:[20230101 TO *]` — WILDCARDS BREAK THE API with 500 errors
+      - WRONG: adding `au:` or `cat:` fields — those are handled by other components
+      - RIGHT: Use `17000101` for open-ended start dates and `24000101` for open-ended end dates
+
+      ## Examples
+      | User Request | arXiv Query |
+      |---|---|
+      | Papers about machine learning applications in healthcare | all:"machine learning" AND all:"healthcare" |
+      | Deep learning for computer vision | all:"deep learning" AND all:"computer vision" |
+      | Natural language processing methods | all:"natural language processing" |
+      | Quantum computing algorithms | all:"quantum computing algorithms" |
+      | Papers about quantum computing by Nielsen | all:"quantum computing" |
+      | Advances in transformer neural networks between 2020 and 2023 | all:"transformer neural networks" AND submittedDate:[20200101 TO 20231231] |
+      | Machine learning papers from 2023 | all:"machine learning" AND submittedDate:[20230101 TO 20231231] |
+      | Deep learning papers from 2023 onward | all:"deep learning" AND submittedDate:[20230101 TO 24000101] |
+      | Quantum computing papers up to 2022 | all:"quantum computing" AND submittedDate:[17000101 TO 20221231] |
+      | Neural networks from 2020 to 2023 | all:"neural networks" AND submittedDate:[20200101 TO 20231231] |
+      | Find the paper with arXiv ID 1704.01595 | id:1704.01595 |
+      | Papers with 'neural networks' in the title but not about 'image recognition' | ti:"neural networks" ANDNOT all:"image recognition" |
+      | Papers by both Hinton and Bengio about deep learning | all:"deep learning" |
+      | Papers by Roberto Fulánez-Santos about AGN | all:agn |
+      | Papers by Roberto Fulánez-Santos | NONE |
+      | Papers by Mateo Richi about SMBH | all:smbh |
+      | Find papers by Paul Martin-Dussaud about Loop Quantum Gravity | all:"Loop Quantum Gravity" |
+      | Papers by Ignacio García | NONE |
+      | Papers by María López Sánchez | NONE |
+      | Papers about CERN-TH reports | all:"CERN-TH" |
+      | I want all papers from Ignacio Ordovás Pascual about machine learning | all:"machine learning" |
+      | Get all papers from Ignacio Ordovás Pascual about AGN | all:agn |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  # ===========================================================================
+  # TWO-STEP CATEGORY CLASSIFICATION
+  # ===========================================================================
+  # Instead of one 300-line prompt with 150+ codes (which causes attention
+  # dilution in small models), we split into:
+  #   Step 1: Classify the user request into a broad academic domain
+  #   Step 2: Map to specific arXiv codes using ONLY that domain's list
+  #
+  # This reduces the code list each model sees from 150+ to 5-40 codes,
+  # dramatically improving accuracy for small models that lose focus on
+  # the full list.
+  #
+  # The existing single-step PROMPT_ARXIV_CATEGORY is preserved above for
+  # A/B comparison. The query_builder selects between them via category_mode.
+  # ===========================================================================
+
+  # ---- Step 1: Domain classification ----
+  category_domain:
+    name: CATEGORY_DOMAIN_PROMPT
+    content: |
+      You classify research topics into broad academic domains.
+
+      CRITICAL: Return ONLY one or two domain labels. No explanations, no prose.
+
+      Choose from: CS, PHYSICS, MATH, STATS, BIOLOGY, ECON, ENGINEERING, NONLINEAR
+
+      Rules:
+      - Return the SINGLE most relevant domain label.
+      - If the topic clearly spans two domains, return both separated by comma: CS, MATH
+      - Return NONE if no academic domain applies, or if only author names are given with no topic.
+
+      Domain descriptions:
+      - CS: Computer science, AI, machine learning, NLP, computer vision, robotics, software, databases, networks
+      - PHYSICS: Astrophysics, quantum physics, particle physics, condensed matter, nuclear, optics, fluid dynamics, cosmology, relativity, AGN, SMBH
+      - MATH: Pure and applied mathematics, algebra, geometry, topology, number theory, analysis, probability
+      - STATS: Statistics, statistical learning, econometrics methods, statistical methodology
+      - BIOLOGY: Quantitative biology, genomics, molecular biology, neuroscience, evolution, cell biology
+      - ECON: Economics, finance, portfolio management, pricing, risk management, trading
+      - ENGINEERING: Electrical engineering, signal processing, audio/speech processing, image/video processing, systems and control
+      - NONLINEAR: Nonlinear sciences, chaotic dynamics, pattern formation, cellular automata
+
+      Examples:
+      | Request | Domain |
+      |---|---|
+      | Papers about machine learning applications in healthcare | CS |
+      | Deep learning for computer vision | CS |
+      | Natural language processing methods | CS |
+      | Quantum computing algorithms | PHYSICS |
+      | Papers about AGN | PHYSICS |
+      | Advances in transformer neural networks | CS |
+      | Loop Quantum Gravity | PHYSICS |
+      | Papers about SMBH | PHYSICS |
+      | Cosmology or numerical analysis papers | PHYSICS, MATH |
+      | Papers about econometrics | ECON |
+      | Papers in statistics | STATS |
+      | Papers about genomics | BIOLOGY |
+      | Papers about signal processing | ENGINEERING |
+      | Papers by Ignacio García | NONE |
+      | Papers by Roberto Fulánez-Santos | NONE |
+      | Find the paper with arXiv ID 1704.01595 | NONE |
+
+      USER REQUEST: {user_input}
+      DOMAIN:
+
+  # ---- Step 2: Domain-specific category prompts ----
+  # Each prompt contains ONLY the codes for that domain, keeping the list
+  # short enough for small models to attend to reliably.
+
+  category_cs:
+    name: CATEGORY_CS_PROMPT
+    content: |
+      Return the arXiv Computer Science category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:cs (the general CS category).
+      Return NONE if the request is only about authors with no CS topic.
+
+      Available Computer Science codes:
+      - cs.AI: Artificial Intelligence
+      - cs.AR: Hardware Architecture
+      - cs.CC: Computational Complexity
+      - cs.CE: Computational Engineering, Finance, and Science
+      - cs.CG: Computational Geometry
+      - cs.CL: Computation and Language (NLP)
+      - cs.CR: Cryptography and Security
+      - cs.CV: Computer Vision and Pattern Recognition
+      - cs.CY: Computers and Society
+      - cs.DB: Databases
+      - cs.DC: Distributed, Parallel, and Cluster Computing
+      - cs.DL: Digital Libraries
+      - cs.DM: Discrete Mathematics
+      - cs.DS: Data Structures and Algorithms
+      - cs.ET: Emerging Technologies
+      - cs.FL: Formal Languages and Automata Theory
+      - cs.GL: General Literature
+      - cs.GR: Graphics
+      - cs.GT: Computer Science and Game Theory
+      - cs.HC: Human-Computer Interaction
+      - cs.IR: Information Retrieval
+      - cs.IT: Information Theory
+      - cs.LG: Machine Learning
+      - cs.LO: Logic in Computer Science
+      - cs.MA: Multiagent Systems
+      - cs.MM: Multimedia
+      - cs.MS: Mathematical Software
+      - cs.NA: Numerical Analysis
+      - cs.NE: Neural and Evolutionary Computing
+      - cs.NI: Networking and Internet Architecture
+      - cs.OH: Other Computer Science
+      - cs.OS: Operating Systems
+      - cs.PF: Performance
+      - cs.PL: Programming Languages
+      - cs.RO: Robotics
+      - cs.SC: Symbolic Computation
+      - cs.SD: Sound
+      - cs.SE: Software Engineering
+      - cs.SI: Social and Information Networks
+      - cs.SY: Systems and Control
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Machine learning applications in healthcare | cat:cs.LG |
+      | Deep learning for computer vision | cat:cs.CV |
+      | Natural language processing methods | cat:cs.CL |
+      | Artificial intelligence and deep learning | cat:cs.AI |
+      | Transformer neural networks | cat:cs.LG |
+      | Robotics and control | cat:cs.RO |
+      | Papers by Hinton about deep learning | cat:cs.LG |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_physics:
+    name: CATEGORY_PHYSICS_PROMPT
+    content: |
+      Return the arXiv Physics category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      Return NONE if the request is only about authors with no physics topic.
+
+      Available Physics codes:
+
+      Astrophysics:
+      - astro-ph.CO: Cosmology and Nongalactic Astrophysics
+      - astro-ph.EP: Earth and Planetary Astrophysics
+      - astro-ph.GA: Astrophysics of Galaxies (includes AGN, SMBH)
+      - astro-ph.HE: High Energy Astrophysical Phenomena
+      - astro-ph.IM: Instrumentation and Methods for Astrophysics
+      - astro-ph.SR: Solar and Stellar Astrophysics
+
+      Condensed Matter:
+      - cond-mat.dis-nn: Disordered Systems and Neural Networks
+      - cond-mat.mes-hall: Mesoscale and Nanoscale Physics
+      - cond-mat.mtrl-sci: Materials Science
+      - cond-mat.other: Other Condensed Matter
+      - cond-mat.quant-gas: Quantum Gases
+      - cond-mat.soft: Soft Condensed Matter
+      - cond-mat.stat-mech: Statistical Mechanics
+      - cond-mat.str-el: Strongly Correlated Electrons
+      - cond-mat.supr-con: Superconductivity
+
+      High Energy Physics, Nuclear, and Quantum:
+      - gr-qc: General Relativity and Quantum Cosmology
+      - hep-ex: High Energy Physics - Experiment
+      - hep-lat: High Energy Physics - Lattice
+      - hep-ph: High Energy Physics - Phenomenology
+      - hep-th: High Energy Physics - Theory
+      - math-ph: Mathematical Physics
+      - nucl-ex: Nuclear Experiment
+      - nucl-th: Nuclear Theory
+      - quant-ph: Quantum Physics
+
+      General Physics:
+      - physics.acc-ph: Accelerator Physics
+      - physics.ao-ph: Atmospheric and Oceanic Physics
+      - physics.app-ph: Applied Physics
+      - physics.atm-clus: Atomic and Molecular Clusters
+      - physics.atom-ph: Atomic Physics
+      - physics.bio-ph: Biological Physics
+      - physics.chem-ph: Chemical Physics
+      - physics.class-ph: Classical Physics
+      - physics.comp-ph: Computational Physics
+      - physics.data-an: Data Analysis, Statistics and Probability
+      - physics.ed-ph: Physics Education
+      - physics.flu-dyn: Fluid Dynamics
+      - physics.gen-ph: General Physics
+      - physics.geo-ph: Geophysics
+      - physics.hist-ph: History and Philosophy of Physics
+      - physics.ins-det: Instrumentation and Detectors
+      - physics.med-ph: Medical Physics
+      - physics.optics: Optics
+      - physics.plasm-ph: Plasma Physics
+      - physics.pop-ph: Popular Physics
+      - physics.soc-ph: Physics and Society
+      - physics.space-ph: Space Physics
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Papers about AGN | cat:astro-ph.GA |
+      | Quantum computing algorithms | cat:quant-ph |
+      | Loop Quantum Gravity | cat:gr-qc |
+      | Papers about SMBH | cat:astro-ph.GA |
+      | Cosmology papers | cat:astro-ph.CO |
+      | Superconductivity research | cat:cond-mat.supr-con |
+      | Fluid dynamics | cat:physics.flu-dyn |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_math:
+    name: CATEGORY_MATH_PROMPT
+    content: |
+      Return the arXiv Mathematics category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:math (the general math category).
+      Return NONE if the request is only about authors with no math topic.
+
+      Available Mathematics codes:
+      - math.AC: Commutative Algebra
+      - math.AG: Algebraic Geometry
+      - math.AP: Analysis of PDEs
+      - math.AT: Algebraic Topology
+      - math.CA: Classical Analysis and ODEs
+      - math.CO: Combinatorics
+      - math.CT: Category Theory
+      - math.CV: Complex Variables
+      - math.DG: Differential Geometry
+      - math.DS: Dynamical Systems
+      - math.FA: Functional Analysis
+      - math.GM: General Mathematics
+      - math.GN: General Topology
+      - math.GR: Group Theory
+      - math.GT: Geometric Topology
+      - math.HO: History and Overview
+      - math.IT: Information Theory
+      - math.KT: K-Theory and Homology
+      - math.LO: Logic
+      - math.MG: Metric Geometry
+      - math.MP: Mathematical Physics
+      - math.NA: Numerical Analysis
+      - math.NT: Number Theory
+      - math.OA: Operator Algebras
+      - math.OC: Optimization and Control
+      - math.PR: Probability
+      - math.QA: Quantum Algebra
+      - math.RA: Rings and Algebras
+      - math.RT: Representation Theory
+      - math.SG: Symplectic Geometry
+      - math.SP: Spectral Theory
+      - math.ST: Statistics Theory
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Numerical analysis methods | cat:math.NA |
+      | Probability theory | cat:math.PR |
+      | Algebraic geometry | cat:math.AG |
+      | Optimization and control | cat:math.OC |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_stats:
+    name: CATEGORY_STATS_PROMPT
+    content: |
+      Return the arXiv Statistics category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:stat (the general statistics category).
+      Return NONE if the request is only about authors with no statistics topic.
+
+      Available Statistics codes:
+      - stat.AP: Applications (biology, education, engineering, social sciences)
+      - stat.CO: Computation (algorithms, simulation, visualization)
+      - stat.ME: Methodology (design, surveys, time series, spatial statistics)
+      - stat.ML: Machine Learning (with statistical/theoretical grounding)
+      - stat.OT: Other Statistics
+      - stat.TH: Statistics Theory
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Statistical machine learning | cat:stat.ML |
+      | Time series analysis | cat:stat.ME |
+      | Papers in statistics | cat:stat |
+      | Papers by Xi Yang in statistics | cat:stat |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_biology:
+    name: CATEGORY_BIOLOGY_PROMPT
+    content: |
+      Return the arXiv Quantitative Biology category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:q-bio (the general biology category).
+      Return NONE if the request is only about authors with no biology topic.
+
+      Available Quantitative Biology codes:
+      - q-bio.BM: Biomolecules (DNA, RNA, proteins, molecular structures)
+      - q-bio.CB: Cell Behavior (cell signaling, morphogenesis, immunology)
+      - q-bio.GN: Genomics (DNA sequencing, gene finding)
+      - q-bio.MN: Molecular Networks (gene regulation, proteomics)
+      - q-bio.NC: Neurons and Cognition (neural networks, behavior)
+      - q-bio.OT: Other Quantitative Biology
+      - q-bio.PE: Populations and Evolution (population dynamics, biodiversity)
+      - q-bio.QM: Quantitative Methods
+      - q-bio.SC: Subcellular Processes
+      - q-bio.TO: Tissues and Organs (blood flow, biomechanics, tumor growth)
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Genomics research | cat:q-bio.GN |
+      | Protein folding | cat:q-bio.BM |
+      | Population dynamics | cat:q-bio.PE |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_econ:
+    name: CATEGORY_ECON_PROMPT
+    content: |
+      Return the arXiv Economics and Finance category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      Return NONE if the request is only about authors with no economics/finance topic.
+
+      Available Economics codes:
+      - econ.EM: Econometrics
+      - econ.GN: General Economics
+      - econ.TH: Theoretical Economics (contract theory, game theory, mechanism design)
+
+      Available Quantitative Finance codes:
+      - q-fin.CP: Computational Finance (Monte Carlo, PDE, lattice methods)
+      - q-fin.EC: Economics (alias for econ.GN)
+      - q-fin.GN: General Finance
+      - q-fin.MF: Mathematical Finance (stochastic, probabilistic analysis)
+      - q-fin.PM: Portfolio Management (investment strategies)
+      - q-fin.PR: Pricing of Securities (valuation, hedging, derivatives)
+      - q-fin.RM: Risk Management
+      - q-fin.ST: Statistical Finance (econometric, econophysics analyses)
+      - q-fin.TR: Trading and Market Microstructure
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Papers about econometrics | cat:econ.EM |
+      | Portfolio management strategies | cat:q-fin.PM |
+      | Risk management research | cat:q-fin.RM |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_engineering:
+    name: CATEGORY_ENGINEERING_PROMPT
+    content: |
+      Return the arXiv Electrical Engineering category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:eess (the general engineering category).
+      Return NONE if the request is only about authors with no engineering topic.
+
+      Available Electrical Engineering and Systems Science codes:
+      - eess.AS: Audio and Speech Processing
+      - eess.IV: Image and Video Processing
+      - eess.SP: Signal Processing
+      - eess.SY: Systems and Control
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Signal processing methods | cat:eess.SP |
+      | Speech recognition systems | cat:eess.AS |
+      | Image processing | cat:eess.IV |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:
+
+  category_nonlinear:
+    name: CATEGORY_NONLINEAR_PROMPT
+    content: |
+      Return the arXiv Nonlinear Sciences category codes that best match this research request.
+
+      CRITICAL: Return ONLY the query string. No explanations, no prose. Just cat:CODE or NONE.
+
+      Format: cat:CODE or cat:CODE1 OR cat:CODE2
+      If no specific subcategory fits, return cat:nlin (the general nonlinear sciences category).
+      Return NONE if the request is only about authors with no nonlinear sciences topic.
+
+      Available Nonlinear Sciences codes:
+      - nlin.AO: Adaptation and Self-Organizing Systems
+      - nlin.CD: Chaotic Dynamics
+      - nlin.CG: Cellular Automata and Lattice Gases
+      - nlin.PS: Pattern Formation and Solitons
+      - nlin.SI: Exactly Solvable and Integrable Systems
+
+      Examples:
+      | Request | Category Query |
+      |---|---|
+      | Chaotic dynamics | cat:nlin.CD |
+      | Pattern formation | cat:nlin.PS |
+      | Papers by Ignacio García | NONE |
+
+      USER REQUEST: {user_input}
+      ARXIV QUERY:

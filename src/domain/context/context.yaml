@@ -1,0 +1,393 @@
+# ===========================================================================
+# Extended Domain Context for ArXiv Query Enrichment
+# ===========================================================================
+# Includes ORIGINAL entries plus FICTIONAL entries for article demonstration.
+# Fictional entries are marked with [ARTICLE] in their description.
+#
+# The fictional entries are designed to test all 5 context types with
+# realistic ambiguity that LLMs would struggle with without injection:
+#   - Acronyms that clash with common meanings (SPARC, APEX, FoldX)
+#   - Team names that could be mistaken for topics
+#   - Project phases with precise date boundaries
+#   - Instruments whose names don't suggest their research area
+#   - Datasets whose acronyms are opaque
+# ===========================================================================
+
+
+# ---------------------------------------------------------------------------
+# GLOSSARY
+# ---------------------------------------------------------------------------
+glossary:
+
+  # ---- Original entries ----
+
+  LINER:
+    expansion: "Low-Ionization Nuclear Emission-Line Region"
+    description: >
+      A type of galactic nucleus defined by its spectral line emission.
+      LINERs are NOT the same as AGN (Active Galactic Nuclei), although
+      they share some observational properties. They represent a distinct
+      class of low-luminosity nuclear activity.
+    categories: ["astro-ph.GA"]
+    aliases: ["LINERs"]
+
+  BPT:
+    expansion: "Baldwin-Phillips-Terlevich diagram"
+    description: >
+      A set of emission-line diagnostic diagrams used to classify the
+      ionisation mechanism in galaxies (star-forming, AGN, LINER, composite).
+      Named after Baldwin, Phillips & Terlevich (1981).
+    categories: ["astro-ph.GA"]
+    aliases: ["BPT diagram", "BPT diagrams"]
+
+  XRB:
+    expansion: "X-ray Binary"
+    description: >
+      A binary star system where one component is a compact object
+      (neutron star or black hole) accreting matter from a companion star,
+      emitting X-rays. NOT related to general X-ray imaging or X-ray
+      crystallography.
+    categories: ["astro-ph.HE"]
+    aliases: ["XRBs", "X-ray binaries"]
+
+  ICM:
+    expansion: "Intracluster Medium"
+    description: >
+      The hot, diffuse gas filling the space between galaxies in a galaxy
+      cluster. Temperatures reach 10^7-10^8 K and it emits in X-rays.
+      NOT related to the acronym ICM in software/communications contexts.
+    categories: ["astro-ph.CO", "astro-ph.GA"]
+    aliases: []
+
+  SED:
+    expansion: "Spectral Energy Distribution"
+    description: >
+      A plot or model of the energy output of an astronomical object as
+      a function of wavelength or frequency. SED fitting is a standard
+      technique in astrophysics to infer physical properties.
+    categories: ["astro-ph.GA", "astro-ph.SR", "astro-ph.CO"]
+    aliases: ["SEDs", "SED fitting"]
+
+  BAO:
+    expansion: "Baryon Acoustic Oscillations"
+    description: >
+      Periodic fluctuations in the density of baryonic matter in the
+      universe, used as a standard ruler to measure the expansion history
+      of the universe. A key cosmological probe.
+    categories: ["astro-ph.CO"]
+    aliases: ["BAOs"]
+
+  RLHF:
+    expansion: "Reinforcement Learning from Human Feedback"
+    description: >
+      A machine learning technique that uses human preference judgments
+      to train reward models, which then guide policy optimisation.
+      Central to the alignment of large language models.
+    categories: ["cs.LG", "cs.CL", "cs.AI"]
+    aliases: []
+
+  RAG:
+    expansion: "Retrieval-Augmented Generation"
+    description: >
+      A technique that combines information retrieval with text generation,
+      allowing language models to ground their outputs in external documents.
+      NOT related to the textile term "rag" or other meanings.
+    categories: ["cs.CL", "cs.IR", "cs.AI"]
+    aliases: []
+
+  CoT:
+    expansion: "Chain of Thought"
+    description: >
+      A prompting technique where the model is encouraged to produce
+      intermediate reasoning steps before arriving at a final answer.
+      Improves performance on arithmetic, logic, and multi-step tasks.
+    categories: ["cs.CL", "cs.AI"]
+    aliases: ["chain-of-thought", "chain of thought"]
+
+  DPO:
+    expansion: "Direct Preference Optimization"
+    description: >
+      An alternative to RLHF that directly optimises a language model
+      using preference pairs, bypassing the need for a separate reward
+      model. Introduced by Rafailov et al. (2023).
+    categories: ["cs.LG", "cs.CL"]
+    aliases: []
+
+  GNN:
+    expansion: "Graph Neural Network"
+    description: >
+      A class of neural networks designed to operate on graph-structured
+      data, where nodes and edges carry features. Used in molecular
+      property prediction, social networks, and knowledge graphs.
+    categories: ["cs.LG", "cs.AI"]
+    aliases: ["GNNs", "graph neural networks"]
+
+  tSZ:
+    expansion: "thermal Sunyaev-Zel'dovich effect"
+    description: >
+      The distortion of the cosmic microwave background (CMB) spectrum
+      caused by inverse Compton scattering of CMB photons by hot
+      electrons in galaxy clusters. A key observable in cluster cosmology.
+    categories: ["astro-ph.CO"]
+    aliases: ["SZ effect", "Sunyaev-Zeldovich"]
+
+  # ---- Fictional entries for article demonstration ----
+
+  SPARC:
+    expansion: "Stellar Population Analysis via Resolved Color-magnitude diagrams"
+    description: >
+      [ARTICLE] A technique for decomposing galaxy stellar populations using
+      spatially resolved color-magnitude diagrams from deep imaging surveys.
+      NOT related to the SPARC processor architecture, the SPARC database of
+      galaxy rotation curves, or any computing platform. This is a photometric
+      analysis method used in extragalactic astrophysics.
+    categories: ["astro-ph.GA", "astro-ph.SR"]
+    aliases: ["SPARC analysis", "SPARC method"]
+
+  CryoNet:
+    expansion: "Cryo-Electron Microscopy Neural Network pipeline"
+    description: >
+      [ARTICLE] A deep learning pipeline designed specifically for automated
+      particle picking and 3D reconstruction in cryo-EM experiments. CryoNet
+      combines convolutional and graph neural networks to handle heterogeneous
+      protein conformations. NOT a general-purpose neural network architecture.
+    categories: ["q-bio.BM", "cs.LG", "cs.CV"]
+    aliases: ["CryoNet pipeline", "Cryo-Net"]
+
+  TurboPEC:
+    expansion: "Turbulent Photoionization Emission Code"
+    description: >
+      [ARTICLE] A numerical simulation code for modelling turbulent
+      photoionization in the interstellar and intergalactic medium. Used
+      to predict emission-line diagnostics from turbulent gas around AGN
+      and in galaxy clusters. NOT related to turbocharger engineering or
+      PEC (photoelectrochemical) cells.
+    categories: ["astro-ph.GA", "astro-ph.HE"]
+    aliases: ["TurboPEC code", "TurboPEC simulations"]
+
+  FoldX:
+    expansion: "Folding eXploration toolkit for quantum-enhanced protein stability prediction"
+    description: >
+      [ARTICLE] A quantum computing framework for predicting protein
+      thermodynamic stability using variational quantum eigensolvers
+      and hybrid classical-quantum optimization. NOT the commercial
+      FoldX software for empirical force-field protein design. This
+      toolkit operates at the quantum chemistry level.
+    categories: ["quant-ph", "q-bio.BM", "physics.chem-ph"]
+    aliases: ["FoldX toolkit", "FoldX predictions"]
+
+  APEX:
+    expansion: "Automated Pipeline for EXoplanet characterization"
+    description: >
+      [ARTICLE] An end-to-end data reduction and analysis pipeline for
+      transiting exoplanet atmospheric characterization from space-based
+      spectroscopy. NOT the APEX radio telescope in Chile (Atacama
+      Pathfinder EXperiment). APEX processes transit spectroscopy data
+      to retrieve atmospheric compositions.
+    categories: ["astro-ph.EP", "astro-ph.IM"]
+    aliases: ["APEX pipeline"]
+
+
+# ---------------------------------------------------------------------------
+# TEAMS
+# ---------------------------------------------------------------------------
+teams:
+
+  # ---- Original entries ----
+
+  NTE:
+    full_name: "Neural Technology Engineering"
+    description: "Cross-disciplinary team working on ML applications in astrophysics"
+    members:
+      - "María López Sánchez"
+      - "Roberto Fulánez Santos"
+      - "Ignacio Ordovás Pascual"
+      - "Paul Martin-Dussaud"
+
+  DL4Astro:
+    full_name: "Deep Learning for Astrophysics"
+    description: "Research group applying deep learning to astronomical data"
+    members:
+      - "Ignacio Ordovás Pascual"
+      - "Wei Zhang"
+      - "Ana García Pérez"
+
+  QML:
+    full_name: "Quantum Machine Learning"
+    description: "Group exploring intersections of quantum computing and ML"
+    members:
+      - "Paul Martin-Dussaud"
+      - "Elena Rodríguez"
+      - "Kenji Tanaka"
+
+  # ---- Fictional entries for article demonstration ----
+
+  Helios:
+    full_name: "High Energy Luminosity and Ionization Observations at Scale"
+    description: >
+      [ARTICLE] Multi-wavelength survey team combining X-ray, optical, and
+      infrared observations of galaxy clusters and AGN feedback.
+    members:
+      - "Elena Vasquez-Torres"
+      - "Hiroshi Nakamura"
+      - "Priya Sharma-Patel"
+      - "Marcus O'Brien-Walsh"
+
+  QuantumBio:
+    full_name: "Quantum Biology Insights"
+    description: >
+      [ARTICLE] Interdisciplinary group applying quantum computing and
+      quantum chemistry methods to structural biology problems.
+    members:
+      - "Sofia Chen-Rodriguez"
+      - "James Okafor"
+      - "Anika Petrov"
+
+
+# ---------------------------------------------------------------------------
+# PROJECT PHASES
+# ---------------------------------------------------------------------------
+project_phases:
+
+  # ---- Original entries ----
+
+  NX_Phase1:
+    project: "NX Project"
+    phase_label: "Phase 1"
+    description: "Initial exploration and literature review"
+    start_date: "2021-01-01"
+    end_date: "2022-06-30"
+
+  NX_Phase2:
+    project: "NX Project"
+    phase_label: "Phase 2"
+    description: "Model development and experimentation"
+    start_date: "2022-07-01"
+    end_date: "2024-12-31"
+
+  # ---- Fictional entries for article demonstration ----
+
+  Helios_Phase1:
+    project: "Helios Project"
+    phase_label: "Phase 1"
+    description: >
+      [ARTICLE] Calibration and survey design phase, including
+      target selection and instrument commissioning.
+    start_date: "2020-06-01"
+    end_date: "2022-03-31"
+
+  Helios_Phase2:
+    project: "Helios Project"
+    phase_label: "Phase 2"
+    description: >
+      [ARTICLE] Deep field observations and multi-wavelength
+      follow-up of cluster candidates.
+    start_date: "2022-04-01"
+    end_date: "2024-09-30"
+
+  QuantumBio_Pilot:
+    project: "QuantumBio"
+    phase_label: "Pilot Study"
+    description: >
+      [ARTICLE] Initial feasibility study for quantum-enhanced
+      protein folding simulations.
+    start_date: "2023-01-01"
+    end_date: "2023-12-31"
+
+
+# ---------------------------------------------------------------------------
+# INSTRUMENTS
+# ---------------------------------------------------------------------------
+instruments:
+
+  # ---- Original entries ----
+
+  JWST:
+    full_name: "James Webb Space Telescope"
+    description: "NASA infrared space telescope, successor to Hubble. Launched Dec 2021."
+    categories: ["astro-ph.GA", "astro-ph.CO", "astro-ph.EP", "astro-ph.IM"]
+
+  VLT:
+    full_name: "Very Large Telescope"
+    description: "ESO facility at Cerro Paranal, Chile. Four 8.2m unit telescopes."
+    categories: ["astro-ph.IM", "astro-ph.GA"]
+
+  ALMA:
+    full_name: "Atacama Large Millimeter Array"
+    description: "Interferometer in the Atacama desert for mm/sub-mm astronomy."
+    categories: ["astro-ph.GA", "astro-ph.SR", "astro-ph.IM"]
+
+  eROSITA:
+    full_name: "extended ROentgen Survey with an Imaging Telescope Array"
+    description: "X-ray telescope aboard Spektr-RG. Performs all-sky X-ray surveys."
+    categories: ["astro-ph.HE", "astro-ph.CO"]
+
+  # ---- Fictional entries for article demonstration ----
+
+  NEXUS-II:
+    full_name: "Next-generation EUV and X-ray Ultrafast Spectrometer, Mark II"
+    description: >
+      [ARTICLE] A proposed space-based spectrometer for high-cadence
+      X-ray observations of transient phenomena in galaxy clusters,
+      AGN variability, and compact object mergers.
+    categories: ["astro-ph.HE", "astro-ph.IM", "astro-ph.CO"]
+    aliases: ["NEXUS II", "NEXUS2"]
+
+  PolariScope:
+    full_name: "Polarimetric Imaging Scope"
+    description: >
+      [ARTICLE] A wide-field polarimetric imager designed for resolved
+      stellar population studies in nearby galaxies. Provides simultaneous
+      photometry and linear polarization measurements.
+    categories: ["astro-ph.GA", "astro-ph.SR", "astro-ph.IM"]
+    aliases: ["Polariscope"]
+
+
+# ---------------------------------------------------------------------------
+# DATASETS / SURVEYS
+# ---------------------------------------------------------------------------
+datasets:
+
+  # ---- Original entries ----
+
+  SDSS:
+    full_name: "Sloan Digital Sky Survey"
+    description: >
+      Major multi-spectral imaging and spectroscopic redshift survey.
+      Multiple data releases (DR1 through DR18+). Covers ~35% of the sky.
+    categories: ["astro-ph.GA", "astro-ph.CO"]
+
+  DESI:
+    full_name: "Dark Energy Spectroscopic Instrument"
+    description: >
+      Spectroscopic survey instrument measuring redshifts of galaxies and
+      quasars to study dark energy via baryon acoustic oscillations.
+    categories: ["astro-ph.CO"]
+
+  Gaia:
+    full_name: "Gaia space observatory"
+    description: >
+      ESA astrometry mission creating a 3D map of the Milky Way.
+      Measures positions, distances, and motions of ~2 billion stars.
+    categories: ["astro-ph.GA", "astro-ph.SR", "astro-ph.IM"]
+    aliases: ["GAIA"]
+
+  # ---- Fictional entries for article demonstration ----
+
+  PHOTON-Z:
+    full_name: "PHOTometric Observations of Nebulae at high-Z"
+    description: >
+      [ARTICLE] A deep photometric survey targeting high-redshift
+      galaxy clusters and proto-clusters at z > 2, using multi-band
+      imaging to identify cluster candidates via the red sequence method.
+    categories: ["astro-ph.CO", "astro-ph.GA"]
+    aliases: ["PHOTONZ", "PHOTON Z"]
+
+  SynBio-DB:
+    full_name: "Synthetic Biology Database of engineered protein sequences"
+    description: >
+      [ARTICLE] A curated database of synthetically designed protein
+      sequences with experimentally validated stability measurements,
+      used as a benchmark for computational protein design methods.
+    categories: ["q-bio.BM", "q-bio.GN"]
+    aliases: ["SynBioDB", "SynBio DB"]
