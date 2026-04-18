@@ -14,13 +14,11 @@ This project implements an intelligent agent that:
 
 ## Installation
 
-```bash
-pip install langgraph pandas requests lmstudio anthropic ollama python-dotenv pyyaml
-```
+You may use install.py / requirements.txt
 
 ## Usage
 
-### Python API (Primary)
+### Python API
 
 ```python
 from src.application.usecases.arxiv import run_arxiv_agent
@@ -57,21 +55,6 @@ result = await run_arxiv_agent(
 )
 ```
 
-### REST API
-
-```bash
-# Health check
-curl http://localhost:5000/api/v1/health
-
-# Search papers
-curl -X POST http://localhost:5000/api/v1/papers/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_prompt": "papers about machine learning",
-    "llm_provider": "lmstudio",
-    "model_id": "qwen/qwen3-32b"
-  }'
-```
 
 ## Agent Workflow
 
@@ -190,7 +173,3 @@ The returned DataFrame contains:
 | **LMStudio** | Local | Free, no API key; model must be loaded in LMStudio UI |
 | **Ollama** | Local | Free; supports `auto_pull` and `auto_unload` |
 | **Claude API** | Cloud | Paid; requires `ANTHROPIC_API_KEY` env var |
-
-## License
-
-MIT License
